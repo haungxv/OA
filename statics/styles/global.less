@@ -1,0 +1,249 @@
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  outline: none;
+}
+
+body, html {
+  width: 100%;
+  height: 100%;
+}
+
+.downLoad {
+  //border: 1px solid;
+  display: block;
+  padding: 0 auto;
+  width: 100%;
+  float: left;
+  color: black;
+  margin-bottom: 10px;
+  font-size: 12px;
+}
+
+.box_downLoad {
+  padding: 5px 3px;
+  margin-top: 80px;
+  display: block;
+  position: fixed;
+  right: 7%;
+  overflow: hidden;
+  border-radius: 5px;
+  width: 8%;
+  //height:20%;
+  float: right;
+  //border: 1px solid;
+  box-shadow: 0 0 1px 1px rgba(0, 0, 0, 0.1);
+}
+
+.propose-kill-button {
+  padding: 0 5px;
+  height: 31px;
+  line-height: 31px;
+  font-size: 13px;
+  border-radius: 5px 5px 5px 5px;
+  text-align: center;
+  border: 1px solid red;
+  color: red;
+  transition: all 0.5s;
+  margin: 0 auto;
+  &:hover {
+    background-color: red !important;
+    color: white !important;
+  }
+  &:focus {
+    background-color: red;
+    color: white;
+  }
+}
+
+@buttonHeight: 40px; //按钮高度
+@buttonColor: rgba(26, 173, 25, 0.5);
+; //按钮颜色
+
+@littleButtonWidth: 100px; //小按钮宽度
+@bigButtonWidth: 160px; //小按钮高度
+
+@textareaHeight: 300px; //填写意见框高度
+@textareaWidth: 100%; //填写意见框宽度
+
+.box {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  min-height: 700px;
+  overflow: auto;
+  padding-left: 10px;
+  box-sizing: border-box;
+  padding-bottom: 10px;
+}
+
+.onlineChange {
+  .markdown {
+    width: 50%;
+    height: 100%;
+    float: left;
+    min-height: 500px;
+    margin-left: 5px;
+  }
+  .advice {
+    height: 95%;
+    margin-top: 60px;
+    margin-left: 40px;
+    width: 40%;
+    float: left;
+    textarea {
+      width: @textareaWidth;
+      height: @textareaHeight;
+    }
+    .button_submit {
+      float: left;
+      width: @littleButtonWidth;
+      height: @buttonHeight;
+      line-height: @buttonHeight;
+      margin: 10px auto 10px 40%;
+      text-align: center;
+      color: white;
+      cursor: pointer;
+      border-radius: 5px;
+      background-color: @buttonColor;
+      transition: all 0.5s;
+      &:hover {
+        background-color: rgba(26, 173, 25, 1);
+      }
+    }
+    .button_draft {
+      float: left;
+      width: @bigButtonWidth;
+      height: @buttonHeight;
+      line-height: @buttonHeight;
+      margin: 40px 20px 20px 30px;
+      border: 1px solid @buttonColor;
+      text-align: center;
+      background-color: white;
+      border-radius: 5px;
+      transition: all 0.5s;
+      color: @buttonColor;
+      cursor: pointer;
+      &:hover {
+        background-color: rgba(26, 173, 25, 1);
+        color: white;
+      }
+    }
+  }
+  .tip {
+    height: 250px;
+    width: 250px;
+    font-weight: normal;
+    top: calc(50% - 50px);
+
+    background: rgba(17, 17, 17, 0.7);
+    p {
+      color: white !important;
+      font-size: 30px;
+    }
+    i {
+      font-size: 30px;
+      color: white !important;
+    }
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .propose-kill-button {
+    width: 90%;
+    height: 30px;
+    padding: 0 !important;
+    border: 1px solid #dcdfe6;
+    color: #606266;
+    margin: 0 auto !important;
+    border-radius: 0;
+  }
+
+  .box, .onlineChange {
+    min-height: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .markdown {
+    width: 90% !important;
+    margin: 20px auto !important;
+    float: none !important;
+    height: auto !important;
+    display: block !important;
+    min-height:auto !important;
+  }
+
+  .advice {
+    width: 100% !important;
+    //border: 1px solid;
+    margin: 0 !important;
+  }
+
+  .whole {
+    width: 100% !important;
+  }
+
+  .box_downLoad {
+    display: none;
+    float: none;
+    right: 0;
+    position: relative;
+    border: 1px solid;
+    margin: 0;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .select-advice {
+    margin: 10px auto 0 auto !important;
+    display: block;
+    width: 80%;
+    border-radius: 0;
+  }
+
+  .select-advice-option {
+    margin-bottom: 10px;
+  }
+
+  .advice-text {
+    height: auto !important;
+    min-height: auto !important;
+    width: 80%;
+    margin: 10px auto!important;
+    display: block;
+    textarea{
+      height: auto !important;
+      min-height: 150px !important;
+    }
+  }
+
+
+  .button_draft {
+    width: 50% !important;
+    float: none !important;
+    margin: 10px auto 0 auto !important;
+    display: block;
+    border: 1px solid #dcdfe6 !important;
+    color: #606266 !important;
+    border-radius: 0;
+  }
+
+  .tip {
+    height: 100px;
+    width: 100px;
+    font-weight: normal;
+    top: calc(50% - 50px);
+
+    background: rgba(17, 17, 17, 0.7);
+    p {
+      color: white !important;
+      font-size: 20px;
+    }
+    i {
+      font-size: 20px;
+      color: white !important;
+    }
+  }
+}

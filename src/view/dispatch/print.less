@@ -1,0 +1,132 @@
+@page {
+  size: A4 portrait;
+  margin: 2.3cm 1.4cm; /* 国家标准公文页边距 GB/T 9704-2012 */
+}
+
+section {
+  page-break-before: always;
+}
+
+@font-face {
+  font-family: fangzheng;
+  src: url('../../../statics/font/fz.ttf');
+}
+
+@font-face {
+  font-family: fx;
+  src: url('../../../statics/font/fzx.ttf');
+}
+
+.print-h1 {
+  font-family: fangzheng;
+  @media print {
+    padding-top: 1.2cm;
+    margin: 0 auto;
+    //width: 90% ;
+    text-align: center;
+    //position: relative;
+  }
+  .print-head {
+    font-family: fangzheng;
+    @media Print {
+      display: inline-block;
+      line-height: 1;
+      color: #ff0000;
+      font-size: 42pt;
+      //font-size: 100%;
+      font-weight: 800;
+      //position: absolute;
+      white-space: nowrap;
+      width: auto;
+      //border: 1px solid;
+      letter-spacing: 12pt;
+      margin-bottom: 12.5pt;
+      transform: scaleX(0.7) scaleY(1.1);
+    }
+  }
+  .print-h3 {
+    @media Print {
+      line-height: 2.5;
+      width: 86%;
+      font-family: SimSun;
+      font-weight: 500;
+      padding-top: 10pt;
+      margin: 8pt auto 0 auto;
+      font-size: 16.5pt;
+      text-align: center;
+      padding-bottom: 2pt;
+      border-bottom: 1.5px solid rgba(229, 28, 35, 1);
+    }
+  }
+}
+
+.print-div {
+  @media Print {
+    width: 88%;
+    margin: 0 auto;
+  }
+  .print-div-head {
+    font-family: fx;
+    @media Print {
+      //border: 1px solid;
+      line-height: 3;
+      padding-top: 5pt;
+      //font-family: fx;
+      width: 100%;
+      font-size: 18pt;
+      text-align: center;
+      font-weight: 400;
+    }
+  }
+  .print-div-pre {
+    //border: 1px solid;
+    display: block;
+    @media Print {
+      //text-indent: 16pt;
+      letter-spacing: 0.8pt;
+      line-height: 2;
+      vertical-align: text-top;
+      font-size: 16pt;
+      font-family: 仿宋;
+      word-wrap: break-word;
+      word-break: break-all;
+      width: 100%;
+      white-space: pre-wrap;
+
+    }
+  }
+}
+
+.print-foot {
+  @media Print {
+    line-height: 2;
+    //width: 75%;
+    margin: 23pt auto 0 auto;
+  }
+  .print-organ {
+    @media Print {
+      display: block;
+      font-family: 仿宋;
+      line-height: 2;
+      width: 30%;
+      font-size: 16pt;
+      text-align: center;
+      float: right;
+      margin-left: 70%;
+      font-weight: 600;
+      letter-spacing: 1pt;
+    }
+  }
+  .print-date {
+    @media Print {
+      font-family: 仿宋;
+      line-height: 2;
+      font-size: 16pt;
+      letter-spacing: 0;
+      width: 30%;
+      float: right;
+      font-weight: 600;
+      text-align: center;
+    }
+  }
+}
