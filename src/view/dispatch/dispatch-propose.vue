@@ -7,18 +7,6 @@
                 <el-button type="primary" @click="save" class="dispatch-propose-head-button2">保存</el-button>
             </el-form-item>
             <div class="dispatch-propose-title">电子科技大学计划财务处发文单</div>
-            <!--<Form></Form>-->
-            <!--<el-form-item label="发文字号:" prop="text_number">-->
-            <!--<el-select v-model="form.text_number" placeholder="请选择拟发文字号">-->
-            <!--<el-option label="处办〔2019〕1号" value="处办〔2019〕1号"></el-option>-->
-            <!--<el-option label="通知〔2019〕1号" value="通知〔2019〕1号"></el-option>-->
-            <!--<el-option label="财函〔2018〕1号" value="财函〔2018〕1号"></el-option>-->
-            <!--<el-option label="改纪〔2018〕9号" value="改纪〔2018〕9号"></el-option>-->
-            <!--</el-select>-->
-            <!--&lt;!&ndash;<el-select v-model="form.text_number" placeholder="请选择拟发文字号">&ndash;&gt;-->
-            <!--&lt;!&ndash;<el-option  v-for="obj in text_num" :label=obj.name value=obj.name></el-option>&ndash;&gt;-->
-            <!--&lt;!&ndash;</el-select>&ndash;&gt;-->
-            <!--</el-form-item>-->
             <el-form-item label="印发份数:" prop="print_sum">
                 <el-input v-model="form.print_sum"></el-input>
             </el-form-item>
@@ -28,24 +16,12 @@
             <el-form-item label="主送/发至:">
                 <el-input v-model="form.destination"></el-input>
             </el-form-item>
-            <!--<el-form-item label="抄送:">-->
-            <!--<el-input v-model="form.cc"></el-input>-->
-            <!--</el-form-item>-->
             <el-form-item label="公开属性:" prop="public">
                 <el-select v-model="form.public" placeholder="请选择公开属性">
                     <el-option label="公开" value='true'></el-option>
                     <el-option label="不公开" value='false'></el-option>
                 </el-select>
             </el-form-item>
-            <!--<el-form-item label="拟稿机构:" prop="department">-->
-            <!--<el-select v-model="form.department" placeholder="请选择拟稿机构">-->
-            <!--<el-option label="机构1" value=1></el-option>-->
-            <!--<el-option label="机构2" value=2></el-option>-->
-            <!--</el-select>-->
-            <!--</el-form-item>-->
-            <!--<el-form-item label="拟稿人:" prop="people">-->
-            <!--<el-input v-model="form.people"></el-input>-->
-            <!--</el-form-item>-->
             <el-form-item label="紧急程度:" prop="emergency">
                 <el-select v-model="form.emergency" placeholder="请选择紧急程度">
                     <el-option label="无" value="0"></el-option>
@@ -56,16 +32,34 @@
             </el-form-item>
             <el-form-item label="领导审批:" prop="first_check_leader">
                 <el-select v-model="form.first_check_leader" placeholder="请选择分管领导">
-                    <el-option v-for="(lead,index) in leader"  :label=lead.title+lead.name :value=lead.id
+                    <el-option v-for="(lead,index) in leader" :label=lead.title+lead.name :value=lead.id
                                :key="index"></el-option>
                 </el-select>
             </el-form-item>
             <el-form-item label="正文:" size="medium" prop="desc_content">
-                <!--<el-input type="textarea" v-model="form.desc_content"></el-input>-->
                 <mavon-editor v-model="form.desc_content" :toolbars="toolbars"/>
             </el-form-item>
             <el-form-item label="附件:">
-                <input type="file" @change="getupload($event)" ref="clearFile" multiple="multiple">
+                <div class="fileCom">
+                    <div class="file-div">
+                        <button class="file-button">上传文件</button>
+                        <input
+                                type="file"
+                                @change="getupload($event)"
+                                ref="clearFile"
+                                multiple="multiple"
+                                class="fileInput"
+                        >
+                    </div>
+                    <ul class="file-list">
+                        <li v-for="(file,index) in list" class="file-list-li">
+                            {{file.name}}
+                            <img src="../../../statics/images/close.png"
+                                 @click="remove(index)"
+                                 style="display: block;height: 25px;float: right; cursor: pointer;">
+                        </li>
+                    </ul>
+                </div>
             </el-form-item>
             <el-form-item>
                 <el-button type="success" @click="onSubmit" class="dispatch-sendButton">发送文单 send</el-button>
@@ -130,25 +124,28 @@
                     first_check_leader: [
                         {required: true, message: '请选审批领导', trigger: 'blur'}
                     ],
-                    // people: [
-                    //     {required: true, message: '请输入拟稿人', trigger: 'blur'}
-                    // ],
-                    // emergency: [
-                    //     {required: true, message: '请选择紧急程度', trigger: 'blur'}
-                    // ],
                     desc_content: [
                         {required: true, message: '请输入文单正文', trigger: 'blur'}
                     ]
                 },
                 dialogVisible: false,
-                role: ''
+                role: '',
+                upLoad: []
             }
         },
         methods: {
             //添加附件
+            // getupload(event) {
+            //     this.form.upload = event.target.files;
+            // },
             getupload(event) {
-                this.form.upload = event.target.files;
-                console.log(this.form.upload);
+                let files = event.target.files
+                for (let i = 0; i < files.length; i++) {
+                    this.form.upload.push(files[i])
+                }
+            },
+            remove(e) {
+                this.form.upload.splice(e, 1)
             },
             //提交文单至相应领导
             onSubmit() {
@@ -210,6 +207,7 @@
                                         upload: []
                                     }
                                     self.$refs.clearFile.value = ''
+                                    // self.form.upload = []
                                     self.$message({
                                         message: '已发送',
                                         // type: 'success',
@@ -259,17 +257,6 @@
                     }
                 })
             },
-
-            //打开弹窗
-            // openDialog() {
-            //     event.preventDefault();
-            //     this.$refs.form.validate((valid) => {
-            //         if (valid) {
-            //             this.dialogVisible = true;
-            //         }
-            //     });
-            // },
-
             //保存
             save() {
                 this.$refs.form.validate((valid) => {
@@ -408,6 +395,11 @@
                 done();
             }
         },
+        computed: {
+            list() {
+                return this.form.upload;
+            }
+        },
         mounted() {
             document.getElementsByClassName("fa-mavon-columns")[0].click();
             this.$nextTick(() => {
@@ -479,4 +471,65 @@
         font-family: PingFangSC-regular;
     }
 
+    .fileInput {
+        width: 70px;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        z-index: 99;
+        cursor: pointer;
+    }
+
+    .file-button {
+        width: 70px;
+        height: 30px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        box-shadow: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+        background-color: #409eff;
+        border: 1px solid #409eff;
+    }
+
+    .file-div {
+        vertical-align: top;
+        width: 70px;
+        height: 30px;
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .file-list {
+        display: inline-block;
+        list-style: none;
+        margin-left: 10px;
+        position: relative;
+        width: 30%;
+        vertical-align: top;
+        font-size: 14px;
+    }
+
+    .file-list-li {
+        line-height: 25px;
+        height: 25px;
+        font-size: 14px;
+        display: block;
+        padding-bottom: 3px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .file-list-li:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .fileCom {
+        position: relative;
+    }
 </style>

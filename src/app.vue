@@ -16,21 +16,6 @@
         },
         mounted() {
             console.log(this.$refs.phoneAside)
-        },
-        created() {
-            // 在页面加载时读取sessionStorage里的状态信息
-            // if (sessionStorage.length) {
-            //     this.$store.state.token = sessionStorage.getItem("token");
-            //     this.$store.state.role = sessionStorage.getItem("role");
-            //     this.$store.state.userName = sessionStorage.getItem("userName");
-            // }
-
-            // 在页面刷新时将vuex里的信息保存到sessionStorage里
-            // window.addEventListener("beforeunload", () => {
-            //     sessionStorage.setItem("token", this.$store.state.token);
-            //     sessionStorage.setItem("role", this.$store.state.role);
-            //     sessionStorage.setItem("userName", this.$store.state.userName);
-            // })
         }
     }
 </script>

@@ -68,7 +68,7 @@
                  </span>
             </el-dialog>
         </div>
-        <div class="dispatch-propose-approval" v-show=this.$store.state.UnDispatchMark>
+        <div class="dispatch-propose-approval" v-show=this.$store.state.UnDispatchMark v-if="isNormal">
             <div class="box onlineChange">
                 <mavon-editor v-model="context" :toolbars="toolbars" class="markdown" style="margin-top: 40px"/>
                 <div class="box_downLoad">
@@ -77,6 +77,7 @@
                        class="downLoad">{{index+1}}.{{li.name}}</a>
                 </div>
                 <div class="advice">
+                    <el-button @click="showPaper('send')" class="check_paper">查看文单</el-button>
                     <el-input
                             class="advice-text"
                             type="textarea"
@@ -92,15 +93,24 @@
                 </div>
             </div>
         </div>
+
+        <!--查看文单详情-->
+        <print-paper v-if="isPaper"
+                     :data="paper_data"
+                     :pass_and_read="paper_pass"
+                     @backToDetail="printPaperBack">
+        </print-paper>
     </div>
 </template>
 
 <script>
     import {mavonEditor} from 'mavon-editor'
+    import printPaper from '../done/printPaper.vue';
+
 
 
     export default {
-        components: {mavonEditor},
+        components: {mavonEditor,printPaper},
         data() {
             return {
                 isShow: this.$store.state.role == 1,
@@ -137,7 +147,12 @@
                 page: 1,
                 killId: '',
                 dialog: false,
-                list: []
+                list: [],
+
+                isNormal:true,
+                isPaper: false,//文单详情是否展示
+                paper_data: [],//文单基本信息
+                paper_pass: [],//文单传阅意见
             }
         },
         methods: {
@@ -290,7 +305,151 @@
                         duration: 1500
                     })
                 })
-            }
+            },
+
+            showPaper(type) {
+                this.$get(`/api/v1/${type}/${this.id}/read_${type}/`)
+                    .then((res) => {
+                        let date = new Date(res.data.add_time);
+                        let time = `${date.getFullYear()}年${date.getMonth() + 1}月${date.getDate()}日`;
+                        let data = [
+                            {
+                                id: 1,
+                                name: '发文字号：',
+                                value: res.data.text_number,
+                            },
+                            {
+                                id: 2,
+                                name: '印发份数：',
+                                value: res.data.print_sum,
+                            },
+                            {
+                                id: 3,
+                                name: '文件标题：',
+                                value: res.data.title,
+                            },
+                            {
+                                id: 4,
+                                name: '主送/发至：',
+                                value: `无`,
+                            },
+                            {
+                                id: 5,
+                                name: '抄送：',
+                                value: `无`,
+                            },
+                            {
+                                id: 6,
+                                name: '公开属性：',
+                                value: res.data.public ? '公开' : '不公开',
+                            },
+                            {
+                                id: 7,
+                                name: '拟稿人：',
+                                value: `无`,
+                            },
+                            {
+                                id: 8,
+                                name: '紧急程度：',
+                                value: res.data.emergency,
+                            },
+                            {
+                                id: 9,
+                                name: '创建时间：',
+                                value: time,
+                                // value: res.data.add_time.replace('T', ' ').substring(0, 19),
+                            },
+                            {
+                                id: 10,
+                                name: '审批领导：',
+                                value: '无',
+                            },
+                            {
+                                id: 11,
+                                name: '审核领导：',
+                                value: '无',
+                            },
+                            {
+                                id: 12,
+                                name: '领导批示：',
+                                value: '无',
+                            },
+                            {
+                                id: 13,
+                                name: '综合办拟办：',
+                                value: '无',
+                            },
+                        ];
+                        //主送/送至
+                        if (res.data.destination) {
+                            data[3].value = `${res.data.destination}`;
+                        }
+                        //抄送
+                        if (res.data.cc) {
+                            data[4].value = `${res.data.cc}`;
+                        }
+                        //拟稿人
+                        if (res.data.people) {
+                            data[6].value = `${res.data.department}${res.data.people.name}${res.data.people.title}`
+                        }
+                        //一审领导和一审意见
+                        if (res.data.first_check) {
+                            if (res.data.first_check.first) {
+                                if (res.data.first_check.first.user.name) {
+                                    data[9].value = `${res.data.first_check.first.user.department_name}${res.data.first_check.first.user.name}${res.data.first_check.first.user.title}`
+                                }
+                                if (res.data.first_check.first.comment) {
+                                    data[11].value = `${res.data.first_check.first.user.name}批示内容：${res.data.first_check.first.comment}<br/>时间：${res.data.first_check.first.comment_time.replace('T', ' ').substring(0, 19)}`
+                                }
+                            }
+                            if (res.data.first_check.second) {
+                                if (res.data.first_check.second.user.name) {
+                                    data[9].value += `&nbsp;&nbsp;&nbsp;${res.data.first_check.second.user.department_name}${res.data.first_check.second.user.name}${res.data.first_check.second.user.title}`
+                                }
+                                if (res.data.first_check.second.comment) {
+                                    data[11].value += `<br/>${res.data.first_check.second.user.name}批示内容：${res.data.first_check.second.comment}<br/>时间：${res.data.first_check.second.comment_time.replace('T', ' ').substring(0, 19)}`
+                                }
+                            }
+                        }
+                        //二审领导和二审意见
+                        if (res.data.second_check) {
+                            if (res.data.second_check.person.name) {
+                                data[10].value = `${res.data.second_check.person.department_name}${res.data.second_check.person.name}${res.data.second_check.person.title}`
+                            }
+                        }
+                        //综合办意见
+                        if (res.data.dealer && res.data.dealer.user.name) {
+                            data[12].value = `签发人：${res.data.dealer.user.name}<br/>内容：${res.data.dealer.comment}<br/>时间：${res.data.dealer.comment_time.replace('T', ' ').substring(0, 19)}`
+                        }
+
+                        let pass_and_read = [];//传阅评语内容
+                        if (res.data.pass_and_read) {
+                            let len = res.data.pass_and_read.length;
+                            for (let i = 0; i < len; i++) {
+                                if (res.data.pass_and_read[i].is_read) {
+                                    pass_and_read.push({
+                                        id: i + 1,
+                                        name: '传阅意见：',
+                                        value: `${res.data.pass_and_read[i].people.department}：${res.data.pass_and_read[i].people.name}${res.data.pass_and_read[i].people.title}&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;时间：${res.data.pass_and_read[i].comment_time.replace('T', ' ').substring(0, 19)}<br/>意见内容：${res.data.pass_and_read[i].comment_content}`,
+                                    })
+                                }
+                            }
+                        }
+
+                        this.paper_data = data;
+                        this.paper_pass = pass_and_read;
+
+                        this.$nextTick(() => {
+                            this.isNormal = false;
+                            this.isPaper = true;
+                        });
+                    })
+            },
+            printPaperBack() {
+                //查看文单返回
+                this.isNormal = true;
+                this.isPaper = false;
+            },
         },
         computed: {
             //当前页面显示的文单信息
@@ -444,6 +603,9 @@
                 color: white !important;
             }
         }
+    }
+    .check_paper{
+        margin-bottom:10px;
     }
 
 </style>

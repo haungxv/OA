@@ -5,9 +5,7 @@
     >
         <div class="body-main">
             <transition class="fades">
-                <keep-alive>
                     <router-view></router-view>
-                </keep-alive>
             </transition>
         </div>
     </el-col>

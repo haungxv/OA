@@ -619,7 +619,7 @@
                 padding-top: 5pt;
                 //font-family: fx;
                 width: 100%;
-                font-size: 18pt;
+                font-size: 22pt;
                 text-align: center;
                 font-weight: 400;
             }

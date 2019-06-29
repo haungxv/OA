@@ -13,13 +13,6 @@
             </el-form-item>
             <el-form-item label="来文单位:" prop="department">
                 <el-input v-model="form.department"></el-input>
-                <!--如果下面这个单位要做动态的，记得有this.$store.state.departmentName这个对象，在进入主页就获取了，不用再次请求-->
-                <!--<el-form-item label="来文单位:" prop="department">-->
-                <!--<el-select v-model="form.department" placeholder="请选择来文单位">-->
-                <!--<el-option label="单位1" value='1'></el-option>-->
-                <!--<el-option label="单位2" value='2'></el-option>-->
-                <!--<el-option label="单位3" value='3'></el-option>-->
-                <!--</el-select>-->
             </el-form-item>
             <el-form-item label="文件标题:" prop="title">
                 <el-input v-model="form.title"></el-input>
@@ -51,10 +44,29 @@
             </el-form-item>
             <el-form-item label="正文:" size="medium">
                 <mavon-editor v-model="form.desc_content" :toolbars="toolbars"/>
-                <!--<el-input type="textarea" v-model="form.desc_content"></el-input>-->
             </el-form-item>
             <el-form-item label="附件:">
-                <input type="file" multiple="multiple" @change="getupload($event)" ref="clearFile">
+                <!--<input type="file" multiple="multiple" @change="getupload($event)" ref="clearFile">-->
+                <div class="fileCom">
+                    <div class="file-div">
+                        <button class="file-button">上传文件</button>
+                        <input
+                                type="file"
+                                @change="getupload($event)"
+                                ref="clearFile"
+                                multiple="multiple"
+                                class="fileInput"
+                        >
+                    </div>
+                    <ul class="file-list">
+                        <li v-for="(file,index) in list" class="file-list-li">
+                            {{file.name}}
+                            <img src="../../../statics/images/close.png"
+                                 @click="remove(index)"
+                                 style="display: block;height: 25px;float: right; cursor: pointer;">
+                        </li>
+                    </ul>
+                </div>
             </el-form-item>
             <el-form-item>
                 <el-button type="success" @click="onSubmit" class="receive-sendButton">发送文单 send</el-button>
@@ -122,25 +134,29 @@
                     first_check_leader: [
                         {required: true, message: '请选择审批领导', trigger: 'blur'}
                     ],
-                    // desc_content: [
-                    //     {required: true, message: '请输入文单正文', trigger: 'blur'}
-                    // ],
                     add_time: [
                         {required: true, message: '请选发文日期', trigger: 'blur'}
-                    ],
-                    // term: [
-                    //     {required: true, message: '请选择截止日期', trigger: 'blur'}
-                    // ],
+                    ]
                 },
                 dialogVisible: false,
                 role: '',
+                upLoad: []
             }
         },
         methods: {
             //添加附件
+            // getupload(event) {
+            //     this.form.upload = event.target.files;
+            //     console.log(this.form.upload);
+            // },
             getupload(event) {
-                this.form.upload = event.target.files;
-                console.log(this.form.upload);
+                let files = event.target.files
+                for (let i = 0; i < files.length; i++) {
+                    this.form.upload.push(files[i])
+                }
+            },
+            remove(e) {
+                this.form.upload.splice(e, 1)
             },
             //提交文单至相应领导
             onSubmit() {
@@ -164,9 +180,7 @@
                 formData.append('receive_number', form.receive_number);
                 formData.append('first_check_leader', form.first_check_leader);
                 formData.append('receiving_proposed', form.receiving_proposed);
-                // formData.append('red', form.red);套红编号不发
                 formData.append('desc_content', textareaContent);
-                // formData.append('upload', form.upload);
                 let length = form.upload.length;
                 for (let i = 0; i < length; i++) {
                     formData.append('upload', form.upload[i]);
@@ -242,17 +256,6 @@
                     )
                 }
             },
-            //打开弹窗
-            // openDialog() {
-            //     event.preventDefault();
-            //     this.$refs.form.validate((valid) => {
-            //         if (valid) {
-            //             this.dialogVisible = true;
-            //         }
-            //     });
-            // },
-
-
             //保存
             save() {
                 this.$refs.form.validate((valid) => {
@@ -360,7 +363,12 @@
                 done();
             }
         },
-        mounted(){
+        computed: {
+            list() {
+                return this.form.upload;
+            }
+        },
+        mounted() {
             document.getElementsByClassName("fa-mavon-columns")[0].click();
             this.$nextTick(() => {
                 this.toolbars.subfield = false;
@@ -430,4 +438,65 @@
         font-family: PingFangSC-regular;
     }
 
+    .fileInput {
+        width: 70px;
+        height: 100%;
+        position: absolute;
+        left: 0;
+        top: 0;
+        opacity: 0;
+        z-index: 99;
+        cursor: pointer;
+    }
+
+    .file-button {
+        width: 70px;
+        height: 30px;
+        position: absolute;
+        left: 0;
+        top: 0;
+        display: block;
+        box-shadow: none;
+        border-radius: 5px;
+        cursor: pointer;
+        color: #fff;
+        background-color: #409eff;
+        border: 1px solid #409eff;
+    }
+
+    .file-div {
+        vertical-align: top;
+        width: 70px;
+        height: 30px;
+        position: relative;
+        cursor: pointer;
+        display: inline-block;
+    }
+
+    .file-list {
+        display: inline-block;
+        list-style: none;
+        margin-left: 10px;
+        position: relative;
+        width: 30%;
+        vertical-align: top;
+        font-size: 14px;
+    }
+
+    .file-list-li {
+        line-height: 25px;
+        height: 25px;
+        font-size: 14px;
+        display: block;
+        padding-bottom: 3px;
+        border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+    }
+
+    .file-list-li:hover {
+        background-color: rgba(0, 0, 0, 0.1);
+    }
+
+    .fileCom {
+        position: relative;
+    }
 </style>

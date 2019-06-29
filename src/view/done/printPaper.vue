@@ -1,7 +1,7 @@
 <template>
     <div class="printPaper">
         <el-button @click="print" class="print">点击打印</el-button>
-        <el-button @click="back" class="back">返回已办结</el-button>
+        <el-button @click="back" class="back">返回</el-button>
 
         <div class="title">电子科技大学计划财务处文单</div>
         <!--发文字号、印发份数-->
@@ -173,7 +173,7 @@
 <style>
     .printPaper {
         height: 100%;
-        border: 1px solid black;
+        /*border: 1px solid black;*/
         background-color: white;
         overflow: auto;
     }

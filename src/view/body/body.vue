@@ -35,13 +35,11 @@
             this.$get(url).then(
                 function (e) {
                     self.$store.state.departmentName = e.data;
-                    console.log(self.$store.state.departmentName)
                 }
             )
             this.$get(url2).then(
                 function (e) {
                     self.$store.state.leader = e.data;
-                    console.log(self.$store.state.leader)
                 }
             )
         }
